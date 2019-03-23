@@ -1,8 +1,9 @@
 ﻿using Lab04Tyshchenko.Model;
 using Lab04Tyshchenko.Tools;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Data;
+using System.Linq;
 using System.Windows.Input;
 
 namespace Lab04Tyshchenko.ViewModels
@@ -10,6 +11,8 @@ namespace Lab04Tyshchenko.ViewModels
     class MainViewModel : INotifyPropertyChanged
     {
         #region Private fields
+
+        private string _filterQuery;
 
         private ICommand _addCommand;
         private ICommand _deleteCommand;
@@ -28,6 +31,19 @@ namespace Lab04Tyshchenko.ViewModels
             Model.UIUserDeleted += UIOnUserDeleted;
 
             UserInfo = new ObservableCollection<User>(storage.Users);
+
+        }
+
+        public string FilterQuery
+        {
+            get { return _filterQuery; }
+            set
+            {
+                _filterQuery = value.ToLower();
+                InvokePropertyChanged(nameof(FilterQuery));
+
+                FilterUsers();
+            }
         }
 
         public User SelectedUser
@@ -106,15 +122,42 @@ namespace Lab04Tyshchenko.ViewModels
         }
         #endregion
 
-        //private void DataGrid_TargetUpdated(object sender, DataTransferEventArgs e)
+        //private void txtName_TextChanged(object sender, TextChangedEventArgs e)
         //{
-        //    //if (sender as DataGridCell != null && (sender as DataGridCell).Column != null && (sender as DataGridCell).Column.Header != null)
-        //    //{
+        //    TextBox t = (TextBox)sender;
+        //    string filterQuery = t.Text;
 
-        //    //    bool? isSelected = (e.OriginalSource as ToggleButton).IsChecked;
+        //    ICollectionView cv = CollectionViewSource.GetDefaultView(UserInfo);
 
-        //    //}
+        //    if (filterQuery == "")
+        //        cv.Filter = null;
+        //    else
+        //    {
+        //        //cv.Filter = o =>
+        //        //{
+        //        //    Person p = o as Person;
+        //        //    if (t.Name == "txtId")
+        //        //        return (p.Id == Convert.ToInt32(filter));
+        //        //    return (p.Name.ToUpper().StartsWith(filter.ToUpper()));
+        //        //};
+        //    }
         //}
+
+        private void FilterUsers()
+        {
+            IEnumerable<User> users = Model.GetAllUsers();
+
+            if (!string.IsNullOrEmpty(FilterQuery))
+            {
+                users = users.Where(x => x.Name.ToLower().Contains(FilterQuery)
+                                                || x.Surname.ToLower().Contains(FilterQuery)
+                                                || x.ChineseSign.ToLower().GetDescription().Contains(FilterQuery)
+                                                || x.SunSign.GetDescription().ToLower().Contains(FilterQuery)
+                                                || x.Email.ToLower().Contains(FilterQuery));
+            }
+
+            UserInfo = new ObservableCollection<User>(users);
+        }
 
         private void UIOnUserAdded(User user)
         {

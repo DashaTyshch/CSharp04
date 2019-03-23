@@ -1,5 +1,6 @@
 ﻿using Lab04Tyshchenko.Navigation;
 using System;
+using System.Collections.Generic;
 
 namespace Lab04Tyshchenko.Model
 {
@@ -32,9 +33,14 @@ namespace Lab04Tyshchenko.Model
             NavigationManager.Instance.Navigate(ModesEnum.AddUser);
         }
 
-        internal void DeleteUser(User user)
+        public void DeleteUser(User user)
         {
             _storage.DeleteUser(user);
+        }
+
+        public List<User> GetAllUsers()
+        {
+            return _storage.Users;
         }
     }
 }
