@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Lab04Tyshchenko.ViewModels
@@ -13,6 +15,7 @@ namespace Lab04Tyshchenko.ViewModels
         #region Private fields
 
         private string _filterQuery;
+        private string _selectedComboBoxItem;
 
         private ICommand _addCommand;
         private ICommand _deleteCommand;
@@ -31,7 +34,6 @@ namespace Lab04Tyshchenko.ViewModels
             Model.UIUserDeleted += UIOnUserDeleted;
 
             UserInfo = new ObservableCollection<User>(storage.Users);
-
         }
 
         public string FilterQuery
@@ -41,6 +43,25 @@ namespace Lab04Tyshchenko.ViewModels
             {
                 _filterQuery = value.ToLower();
                 InvokePropertyChanged(nameof(FilterQuery));
+
+                FilterUsers();
+            }
+        }
+
+        public void ComboBoxSelected(object sender, RoutedEventArgs e)
+        {
+            ComboBox comboBox = (ComboBox)sender;
+            ComboBoxItem selectedItem = (ComboBoxItem)comboBox.SelectedItem;
+            MessageBox.Show(selectedItem.Content.ToString());
+        }
+
+        public string SelectedComboBoxItem
+        {
+            get { return _selectedComboBoxItem; }
+            set
+            {
+                _selectedComboBoxItem = value;
+                InvokePropertyChanged(nameof(SelectedComboBoxItem));
 
                 FilterUsers();
             }
@@ -121,27 +142,6 @@ namespace Lab04Tyshchenko.ViewModels
             Model.DeleteUser(user);
         }
         #endregion
-
-        //private void txtName_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    TextBox t = (TextBox)sender;
-        //    string filterQuery = t.Text;
-
-        //    ICollectionView cv = CollectionViewSource.GetDefaultView(UserInfo);
-
-        //    if (filterQuery == "")
-        //        cv.Filter = null;
-        //    else
-        //    {
-        //        //cv.Filter = o =>
-        //        //{
-        //        //    Person p = o as Person;
-        //        //    if (t.Name == "txtId")
-        //        //        return (p.Id == Convert.ToInt32(filter));
-        //        //    return (p.Name.ToUpper().StartsWith(filter.ToUpper()));
-        //        //};
-        //    }
-        //}
 
         private void FilterUsers()
         {

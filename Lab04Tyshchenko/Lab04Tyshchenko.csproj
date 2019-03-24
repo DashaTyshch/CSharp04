@@ -62,6 +62,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Exceptions\DistantPastBirthdayException.cs" />
+    <Compile Include="Exceptions\FutureBirthdayException.cs" />
+    <Compile Include="Exceptions\InvalidEmailException.cs" />
     <Compile Include="Model\AddUserModel.cs" />
     <Compile Include="Model\MainModel.cs" />
     <Compile Include="Model\NavigationModel.cs" />
