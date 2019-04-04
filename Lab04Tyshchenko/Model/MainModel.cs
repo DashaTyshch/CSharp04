@@ -66,6 +66,8 @@ namespace Lab04Tyshchenko.Model
 
             switch (sortingEnum)
             {
+                case SortingEnum.Default:
+                    break;
                 case SortingEnum.Name:
                     users = users.OrderBy(u => u.Name);
                     break;

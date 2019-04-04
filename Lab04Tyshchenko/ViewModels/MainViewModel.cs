@@ -35,7 +35,7 @@ namespace Lab04Tyshchenko.ViewModels
             Model.UIUserDeleted += UIOnUserDeleted;
 
             UserInfo = new ObservableCollection<User>(storage.Users);
-            SelectedItem = SortingEnum.Name;
+            SelectedItem = SortingEnum.Default;
         }
 
         public string FilterQuery

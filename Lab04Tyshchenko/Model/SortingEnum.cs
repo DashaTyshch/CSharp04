@@ -4,6 +4,8 @@ namespace Lab04Tyshchenko.Model
 {
     public enum SortingEnum
     {
+        [Description("-")]
+        Default,
         [Description("Ім'я")]
         Name,
         [Description("Прізвище")]
