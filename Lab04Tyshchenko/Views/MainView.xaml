@@ -10,7 +10,6 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0 10">
             <Button Command="{Binding AddCommand}">Додати</Button>
             <Button Command="{Binding EditCommand}" CommandParameter="{Binding SelectedUser}">Редагувати</Button>
-            <Button>Зберегти</Button>
             <Button Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedUser}">Видалити</Button>
         </StackPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 10">

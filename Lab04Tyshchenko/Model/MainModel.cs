@@ -11,29 +11,33 @@ namespace Lab04Tyshchenko.Model
     {
         private Storage _storage;
 
-        public event Action<User> UIUserAdded;
-        public event Action<User> UIUserDeleted;
+        public event Action<List<User>> UIUsersChanged;
 
         public MainModel(Storage storage)
         {
             _storage = storage;
-            storage.UserAdded += OnUserAdded;
-            storage.UserDeleted += OnUserDeleted;
+            storage.UsersChanged += OnUsersChanged;
         }
 
-        private void OnUserAdded(User user)
+        private void OnUsersChanged(List<User> users)
         {
-            UIUserAdded?.Invoke(user);
+            UIUsersChanged?.Invoke(users);
         }
 
-        private void OnUserDeleted(User user)
+        private void OnUserDeleted(List<User> users)
         {
-            UIUserDeleted?.Invoke(user);
+            UIUsersChanged?.Invoke(users);
         }
 
         public void GoToAddUser()
         {
             NavigationManager.Instance.Navigate(ModesEnum.AddUser);
+        }
+
+        public void GoToEditUser(User user)
+        {
+            _storage.SetCurrentUser(user);
+            NavigationManager.Instance.Navigate(ModesEnum.EditUser);
         }
 
         public void DeleteUser(User user)
@@ -45,11 +49,6 @@ namespace Lab04Tyshchenko.Model
         {
             return _storage.Users;
         }
-
-        //internal void EditUser(User user)
-        //{
-        //    _storage
-        //}
 
         public ObservableCollection<User> FilteredAndSortedUsers(string filterQuery, SortingEnum sortingEnum)
         {
@@ -66,8 +65,6 @@ namespace Lab04Tyshchenko.Model
 
             switch (sortingEnum)
             {
-                case SortingEnum.Default:
-                    break;
                 case SortingEnum.Name:
                     users = users.OrderBy(u => u.Name);
                     break;
@@ -82,6 +79,8 @@ namespace Lab04Tyshchenko.Model
                     break;
                 case SortingEnum.ChineseSign:
                     users = users.OrderBy(u => u.ChineseSign);
+                    break;
+                default:
                     break;
             }
 

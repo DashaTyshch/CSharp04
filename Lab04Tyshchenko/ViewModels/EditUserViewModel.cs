@@ -7,77 +7,31 @@ using System.Windows.Input;
 
 namespace Lab04Tyshchenko.ViewModels
 {
-    class AddUserViewModel : INotifyPropertyChanged
+    class EditUserViewModel : INotifyPropertyChanged
     {
-        #region Private fields
-
-        private string _name;
-        private string _surname;
-        private string _email;
-        private DateTime _date;
+        private User _user;
 
         private ICommand _proceedCommand;
         private ICommand _backCommand;
 
-        private AddUserModel Model { get; }
+        private EditUserModel Model { get; }
 
-        #endregion
-
-        public AddUserViewModel(Storage storage)
+        public EditUserViewModel(Storage storage)
         {
-            Model = new AddUserModel(storage);
-            _date = DateTime.Today.Date;
+            Model = new EditUserModel(storage);
+            Model.UIUserChanged += UIOnUserChanged;
         }
 
         #region Properties
-        public string Name
+        public User User
         {
-            get { return _name; }
+            get { return _user; }
             set
             {
-                if (_name != value)
+                if (_user != value)
                 {
-                    _name = value;
-                    InvokePropertyChanged(nameof(Name));
-                }
-            }
-        }
-
-        public string Surname
-        {
-            get { return _surname; }
-            set
-            {
-                if (_surname != value)
-                {
-                    _surname = value;
-                    InvokePropertyChanged(nameof(Surname));
-                }
-            }
-        }
-
-        public string Email
-        {
-            get { return _email; }
-            set
-            {
-                if (_email != value)
-                {
-                    _email = value;
-                    InvokePropertyChanged(nameof(Email));
-                }
-            }
-        }
-
-        public DateTime Date
-        {
-            get { return _date; }
-            set
-            {
-                if (_date != value)
-                {
-                    _date = value;
-                    InvokePropertyChanged(nameof(Date));
+                    _user = value;
+                    InvokePropertyChanged(nameof(User));
                 }
             }
         }
@@ -103,16 +57,15 @@ namespace Lab04Tyshchenko.ViewModels
 
         private bool ProceedCanExecute(object obj)
         {
-            return !(string.IsNullOrWhiteSpace(Name) ||
-                string.IsNullOrWhiteSpace(Surname) ||
-                string.IsNullOrWhiteSpace(Email));
+            return !(string.IsNullOrWhiteSpace(User?.Name) ||
+                string.IsNullOrWhiteSpace(User?.Surname));
         }
 
         private void ProceedExecute(object obj)
         {
             try
             {
-                Model.AddUser(Name, Surname, Email, Date);
+                Model.EditUser(User);
             }
             catch (Exception ex)
             {
@@ -148,6 +101,11 @@ namespace Lab04Tyshchenko.ViewModels
         }
         #endregion
 
+        private void UIOnUserChanged(User user)
+        {
+            User = user;
+        }
+
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -157,6 +115,5 @@ namespace Lab04Tyshchenko.ViewModels
             PropertyChanged?.Invoke(this, e);
         }
         #endregion
-
     }
 }

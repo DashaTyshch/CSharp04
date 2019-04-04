@@ -13,6 +13,11 @@ namespace Lab04Tyshchenko.Model
             _storage = storage;
         }
 
+        public void GoToMain()
+        {
+            NavigationManager.Instance.Navigate(ModesEnum.Main);
+        }
+
         public void AddUser(string name, string surname, string email, DateTime date)
         {
             ValidateData(email, date);

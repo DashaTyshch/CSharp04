@@ -7,8 +7,8 @@ namespace Lab04Tyshchenko.Model
 {
     public class Storage
     {
-        public event Action<User> UserAdded;
-        public event Action<User> UserDeleted;
+        public event Action<List<User>> UsersChanged;
+        public event Action<User> CurrentUserChanged;
 
         public List<User> Users { get; private set; }
 
@@ -39,19 +39,24 @@ namespace Lab04Tyshchenko.Model
         {
             Users.Add(user);
             SaveChanges();
-            UserAdded?.Invoke(user);
+            UsersChanged?.Invoke(Users);
         }
 
         public void DeleteUser(User user)
         {
             Users.Remove(user);
             SaveChanges();
-            UserDeleted?.Invoke(user);
+            UsersChanged?.Invoke(Users);
         }
 
         public void EditUser(User user)
         {
+            var index = Users.FindIndex(p => p.Email == user.Email);
+            Users[index].Name = user.Name;
+            Users[index].Surname = user.Surname;
+
             SaveChanges();
+            UsersChanged?.Invoke(Users);
         }
 
         private void SaveChanges()
@@ -61,6 +66,11 @@ namespace Lab04Tyshchenko.Model
             {
                 stream.Write(serializedUsers);
             }
+        }
+
+        public void SetCurrentUser(User user)
+        {
+            CurrentUserChanged?.Invoke(user);
         }
 
         private List<User> CreateUsers()

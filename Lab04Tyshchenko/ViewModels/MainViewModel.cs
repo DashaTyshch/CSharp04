@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Lab04Tyshchenko.ViewModels
@@ -31,8 +30,7 @@ namespace Lab04Tyshchenko.ViewModels
         public MainViewModel(Storage storage)
         {
             Model = new MainModel(storage);
-            Model.UIUserAdded += UIOnUserAdded;
-            Model.UIUserDeleted += UIOnUserDeleted;
+            Model.UIUsersChanged += UIOnUserChanged;
 
             UserInfo = new ObservableCollection<User>(storage.Users);
             SelectedItem = SortingEnum.Default;
@@ -142,12 +140,12 @@ namespace Lab04Tyshchenko.ViewModels
 
         private bool EditCanExecute(User obj)
         {
-            return true;
+            return SelectedUser != null;
         }
 
         private void EditExecute(User user)
         {
-            //Model.EditUser(user);
+            Model.GoToEditUser(user);
         }
 
         public ICommand DeleteCommand
@@ -169,7 +167,7 @@ namespace Lab04Tyshchenko.ViewModels
 
         private bool DeleteCanExecute(object obj)
         {
-            return true;
+            return SelectedUser != null;
         }
 
         private void DeleteExecute(User user)
@@ -178,14 +176,9 @@ namespace Lab04Tyshchenko.ViewModels
         }
         #endregion
 
-        private void UIOnUserAdded(User user)
+        private void UIOnUserChanged(List<User> users)
         {
-            UserInfo.Add(user);
-        }
-
-        private void UIOnUserDeleted(User user)
-        {
-            UserInfo.Remove(user);
+            UserInfo = Model.FilteredAndSortedUsers(FilterQuery, SelectedItem);
         }
 
         #region INotifyPropertyChanged

@@ -8,10 +8,10 @@ namespace Lab04Tyshchenko.Model
     [Serializable]
     public class User
     {
-        public string Name { get; }
-        public string Surname { get; }
-        public string Email { get; set; }
-        public DateTime BirthdayDate { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Email { get; }
+        public DateTime BirthdayDate { get; }
 
         public string SunSign { get; }
         public string ChineseSign { get; }
