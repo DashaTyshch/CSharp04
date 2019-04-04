@@ -1,10 +1,7 @@
 ﻿using Lab04Tyshchenko.Model;
 using Lab04Tyshchenko.Tools;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 

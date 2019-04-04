@@ -30,7 +30,7 @@ namespace Lab04Tyshchenko.Model
             }
             else
             {
-                Users = Create50Users();
+                Users = CreateUsers();
             }
             
         }
@@ -63,7 +63,7 @@ namespace Lab04Tyshchenko.Model
             }
         }
 
-        private List<User> Create50Users()
+        private List<User> CreateUsers()
         {
             var users = new List<User>
             {
@@ -75,7 +75,9 @@ namespace Lab04Tyshchenko.Model
                 new User("Наташа", "Бабіна", "babinata@gmail.com", DateTime.Parse("05/01/1975")),
                 new User("Бла", "Бла", "bla@bla", DateTime.Parse("26/06/1996")),
             };
+
             SaveChanges();
+
             return users;
         }
     }

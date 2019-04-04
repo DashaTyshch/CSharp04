@@ -66,8 +66,10 @@
     <Compile Include="Exceptions\FutureBirthdayException.cs" />
     <Compile Include="Exceptions\InvalidEmailException.cs" />
     <Compile Include="Model\AddUserModel.cs" />
+    <Compile Include="Model\DescriptionValueBinder.cs" />
     <Compile Include="Model\MainModel.cs" />
     <Compile Include="Model\NavigationModel.cs" />
+    <Compile Include="Model\SortingEnum.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\ZodiacEnums.cs" />
     <Compile Include="Navigation\NavigationManager.cs" />

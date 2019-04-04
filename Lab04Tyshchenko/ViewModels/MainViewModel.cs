@@ -1,11 +1,11 @@
 ﻿using Lab04Tyshchenko.Model;
 using Lab04Tyshchenko.Tools;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Lab04Tyshchenko.ViewModels
@@ -15,9 +15,10 @@ namespace Lab04Tyshchenko.ViewModels
         #region Private fields
 
         private string _filterQuery;
-        private string _selectedComboBoxItem;
+        private SortingEnum _selectedItem;
 
         private ICommand _addCommand;
+        private ICommand _editCommand;
         private ICommand _deleteCommand;
 
         private User _selectedUser;
@@ -34,6 +35,7 @@ namespace Lab04Tyshchenko.ViewModels
             Model.UIUserDeleted += UIOnUserDeleted;
 
             UserInfo = new ObservableCollection<User>(storage.Users);
+            SelectedItem = SortingEnum.Name;
         }
 
         public string FilterQuery
@@ -44,26 +46,32 @@ namespace Lab04Tyshchenko.ViewModels
                 _filterQuery = value.ToLower();
                 InvokePropertyChanged(nameof(FilterQuery));
 
-                FilterUsers();
+                UserInfo = Model.FilteredAndSortedUsers(FilterQuery, SelectedItem);
             }
         }
 
-        public void ComboBoxSelected(object sender, RoutedEventArgs e)
+        public SortingEnum SelectedItem
         {
-            ComboBox comboBox = (ComboBox)sender;
-            ComboBoxItem selectedItem = (ComboBoxItem)comboBox.SelectedItem;
-            MessageBox.Show(selectedItem.Content.ToString());
-        }
-
-        public string SelectedComboBoxItem
-        {
-            get { return _selectedComboBoxItem; }
+            get { return _selectedItem; }
             set
             {
-                _selectedComboBoxItem = value;
-                InvokePropertyChanged(nameof(SelectedComboBoxItem));
+                _selectedItem = value;
+                InvokePropertyChanged(nameof(SelectedItem));
 
-                FilterUsers();
+                UserInfo = Model.FilteredAndSortedUsers(FilterQuery, SelectedItem);
+            }
+        }
+
+        public List<DescriptionValueBinder> SortingList
+        {
+            get
+            {
+                return Enum.GetValues(typeof(SortingEnum)).Cast<Enum>().Select(value => new
+                DescriptionValueBinder {
+                    Description = (Attribute.GetCustomAttribute(value.GetType().GetField(value.ToString()), typeof(DescriptionAttribute))
+                    as DescriptionAttribute).Description,
+                    Value = (SortingEnum)value
+                }).ToList();
             }
         }
 
@@ -115,6 +123,33 @@ namespace Lab04Tyshchenko.ViewModels
             Model.GoToAddUser();
         }
 
+        public ICommand EditCommand
+        {
+            get
+            {
+                if (_editCommand == null)
+                {
+                    _editCommand = new RelayCommand<User>(EditExecute, EditCanExecute);
+                }
+                return _editCommand;
+            }
+            set
+            {
+                _editCommand = value;
+                InvokePropertyChanged(nameof(EditCommand));
+            }
+        }
+
+        private bool EditCanExecute(User obj)
+        {
+            return true;
+        }
+
+        private void EditExecute(User user)
+        {
+            //Model.EditUser(user);
+        }
+
         public ICommand DeleteCommand
         {
             get
@@ -142,22 +177,6 @@ namespace Lab04Tyshchenko.ViewModels
             Model.DeleteUser(user);
         }
         #endregion
-
-        private void FilterUsers()
-        {
-            IEnumerable<User> users = Model.GetAllUsers();
-
-            if (!string.IsNullOrEmpty(FilterQuery))
-            {
-                users = users.Where(x => x.Name.ToLower().Contains(FilterQuery)
-                                                || x.Surname.ToLower().Contains(FilterQuery)
-                                                || x.ChineseSign.ToLower().GetDescription().Contains(FilterQuery)
-                                                || x.SunSign.GetDescription().ToLower().Contains(FilterQuery)
-                                                || x.Email.ToLower().Contains(FilterQuery));
-            }
-
-            UserInfo = new ObservableCollection<User>(users);
-        }
 
         private void UIOnUserAdded(User user)
         {
